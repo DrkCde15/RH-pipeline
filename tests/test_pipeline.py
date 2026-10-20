@@ -36,6 +36,10 @@ def sample_df():
 
 
 class TestLoad:
+    @pytest.mark.skipif(
+        not Path("data/HR-Employee-Attrition.csv").exists(),
+        reason="Dataset not available",
+    )
     def test_load_returns_dataframe(self):
         df = load()
         assert isinstance(df, pd.DataFrame)
