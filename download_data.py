@@ -11,6 +11,6 @@ path = kagglehub.dataset_download(DATASET)
 for file in Path(path).rglob("*"):
     if file.is_file():
         DEST.mkdir(parents=True, exist_ok=True)
-        target = DEST / file.name
+        target = DEST / "HR-Employee-Attrition.csv"
         shutil.move(str(file), str(target))
         print(f"Movido para: {target}")
