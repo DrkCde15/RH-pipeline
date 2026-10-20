@@ -3,8 +3,8 @@ from pathlib import Path
 import pandas as pd
 
 BASE_DIR = Path(__file__).parent
-RAW_PATH = BASE_DIR / "data" / "HR-Employee-Attrition.csv"
-PROCESSED_PATH = BASE_DIR / "data" / "HR-Employee-Attrition-processed.csv"
+RAW_PATH = BASE_DIR / "data" / "ibm-attrition" / "HR-Employee-Attrition.csv"
+PROCESSED_PATH = BASE_DIR / "data" / "ibm-attrition" / "HR-Employee-Attrition-processed.csv"
 
 DROP_COLS = ["EmployeeCount", "Over18", "StandardHours", "EmployeeNumber"]
 

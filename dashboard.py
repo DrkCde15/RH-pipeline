@@ -5,7 +5,7 @@ import plotly.express as px
 import streamlit as st
 
 BASE_DIR = Path(__file__).parent
-DATA_PATH = BASE_DIR / "data" / "HR-Employee-Attrition.csv"
+DATA_PATH = BASE_DIR / "data" / "ibm-attrition" / "HR-Employee-Attrition.csv"
 
 st.set_page_config(page_title="RH Dashboard", layout="wide")
 

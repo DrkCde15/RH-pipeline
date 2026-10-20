@@ -37,7 +37,7 @@ def sample_df():
 
 class TestLoad:
     @pytest.mark.skipif(
-        not Path("data/HR-Employee-Attrition.csv").exists(),
+        not Path("data/ibm-attrition/HR-Employee-Attrition.csv").exists(),
         reason="Dataset not available",
     )
     def test_load_returns_dataframe(self):
@@ -121,7 +121,7 @@ class TestValidate:
 
 class TestPipelineIntegration:
     @pytest.mark.skipif(
-        not Path("data/HR-Employee-Attrition.csv").exists(),
+        not Path("data/ibm-attrition/HR-Employee-Attrition.csv").exists(),
         reason="Dataset not available",
     )
     def test_full_pipeline(self):

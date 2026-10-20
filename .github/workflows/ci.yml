@@ -41,6 +41,6 @@ jobs:
           python -m pytest tests/ -v
 
       - name: Run pipeline
-        if: ${{ hashFiles('data/HR-Employee-Attrition.csv') != '' }}
+        if: ${{ hashFiles('data/ibm-attrition/HR-Employee-Attrition.csv') != '' }}
         run: |
           python pipeline.py
