@@ -46,18 +46,18 @@ if dataset_name == "IBM Attrition":
         counts = df["Attrition"].value_counts()
         fig = px.pie(values=counts.values, names=counts.index.map({0: "Não saiu", 1: "Saiu"}),
                      color=counts.index, color_discrete_map={0: "#51cf66", 1: "#ff6b6b"}, hole=0.4)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     with tab2:
         c1, c2 = st.columns(2)
         with c1:
             fig = px.histogram(df, x="Age", color="Attrition", barmode="overlay",
                                color_discrete_map=COLORS, opacity=0.7, title="Idade")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         with c2:
             fig = px.box(df, x="Attrition", y="MonthlyIncome", color="Attrition",
                          color_discrete_map=COLORS, title="Renda")
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
     with tab3:
         job_cols = [c for c in df.columns if c.startswith("JobRole_")]
@@ -66,7 +66,7 @@ if dataset_name == "IBM Attrition":
                      color=list(job_attr.values()), color_continuous_scale="Reds",
                      title="Attrition por Cargo (%)")
         fig.update_layout(showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     with tab4:
         corr = df.corr(numeric_only=True)["Attrition"].drop("Attrition").abs().sort_values(ascending=False).head(10)
@@ -74,7 +74,7 @@ if dataset_name == "IBM Attrition":
                      color=corr.values, color_continuous_scale="RdBu_r",
                      title="Top 10 Correlações")
         fig.update_layout(showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
 elif dataset_name == "HR Resources":
     tab1, tab2, tab3 = st.tabs(["Status", "Salário", "Departamento"])
@@ -84,27 +84,27 @@ elif dataset_name == "HR Resources":
         with c1:
             counts = df["EmploymentStatus"].value_counts()
             fig = px.bar(x=counts.index, y=counts.values,
-                         color=counts.values, color_continuous_scale="Set2", title="Status")
+                         color=counts.values, color_continuous_scale="Viridis", title="Status")
             fig.update_layout(showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         with c2:
             fig = px.bar(x=["PIP", "Needs Improve", "Fully Meets", "Exceeds"],
                          y=df["PerformanceScore"].value_counts().sort_index().values,
                          color=["#ff6b6b", "#ffa94d", "#51cf66", "#339af0"], title="Performance")
             fig.update_layout(showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
     with tab2:
         fig = px.box(df, x="HasTerminated", y="Salary", color="HasTerminated",
                      color_discrete_map=COLORS, title="Salário x Status")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     with tab3:
         dept = df.groupby("Department")["HasTerminated"].mean() * 100
         fig = px.bar(x=dept.index, y=dept.values, color=dept.values,
                      color_continuous_scale="Reds", title="Taxa de Demissão (%)")
         fig.update_layout(showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
 elif dataset_name == "HR Employee":
     tab1, tab2 = st.tabs(["Visão Geral", "Distribuições"])
@@ -113,25 +113,25 @@ elif dataset_name == "HR Employee":
         c1, c2 = st.columns(2)
         with c1:
             fig = px.bar(x=df["Gender"].value_counts().index, y=df["Gender"].value_counts().values,
-                         color=df["Gender"].value_counts().values, color_continuous_scale="Set2",
+                         color=df["Gender"].value_counts().values, color_continuous_scale="Viridis",
                          title="Gênero")
             fig.update_layout(showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         with c2:
             fig = px.bar(x=df["Attrition"].value_counts().index.map({0: "Não", 1: "Sim"}),
                          y=df["Attrition"].value_counts().values,
                          color=["#51cf66", "#ff6b6b"], title="Attrition")
             fig.update_layout(showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
     with tab2:
         c1, c2 = st.columns(2)
         with c1:
             fig = px.histogram(df, x="Age", nbins=30, title="Idade", color_discrete_sequence=["#4dabf7"])
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         with c2:
             fig = px.histogram(df, x="Monthly_Income", nbins=40, title="Renda", color_discrete_sequence=["#ffa94d"])
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
 elif dataset_name == "HR Company":
     tab1, tab2, tab3 = st.tabs(["Demografia", "Salário", "Idade x Salário"])
@@ -142,24 +142,24 @@ elif dataset_name == "HR Company":
             fig = px.bar(x=df["Gender"].value_counts().index, y=df["Gender"].value_counts().values,
                          color=["#f783ac", "#4dabf7"], title="Gênero")
             fig.update_layout(showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         with c2:
             fig = px.bar(x=df["Country"].value_counts().index, y=df["Country"].value_counts().values,
-                         color=df["Country"].value_counts().values, color_continuous_scale="Set2",
+                         color=df["Country"].value_counts().values, color_continuous_scale="Viridis",
                          title="País")
             fig.update_layout(showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
     with tab2:
         fig = px.box(df, x="Department", y="Salary", color="Department", title="Salário por Dept")
         fig.update_layout(showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     with tab3:
         fig = px.scatter(df, x="Age", y="Salary", color="Gender",
                          color_discrete_map={"M": "#4dabf7", "F": "#f783ac"},
                          opacity=0.4, title="Idade x Salário")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
 elif dataset_name == "HR All-in-One":
     tab1, tab2 = st.tabs(["Engagement", "Tenure"])
@@ -170,9 +170,9 @@ elif dataset_name == "HR All-in-One":
         for col in survey_cols:
             fig.add_trace(go.Box(y=df[col], name=col.replace(" Score", "")))
         fig.update_layout(height=400, title="Scores de Engagement")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     with tab2:
         fig = px.histogram(df, x="TenureDays", nbins=40, title="Tenure (dias)",
                            color_discrete_sequence=["#4dabf7"])
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
