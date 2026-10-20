@@ -47,6 +47,12 @@ Pipelines disponíveis: `ibm-attrition`, `hr-resources`, `hr-employee`, `hr-comp
 - Parsing de datas, `HasTerminated` derivado
 - Ordenação por `DateofHire`
 
+### hr-employee
+- Gender → M/F/NB/NS, binários (`Attrition`, `Overtime`)
+- One-hot: `Department`, `Education_Level`, `Job_Role`, `Marital_Status`
+- Validação de faixa de idade e renda
+- Ordenação por `Age`
+
 ## Testes
 
 ```bash
