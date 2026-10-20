@@ -158,7 +158,8 @@ elif dataset_name == "HR Company":
     with tab3:
         fig = px.scatter(df, x="Age", y="Salary", color="Gender",
                          color_discrete_map={"M": "#4dabf7", "F": "#f783ac"},
-                         opacity=0.4, title="Idade x Salário")
+                         opacity=0.4, title="Idade x Salário",
+                         render_mode="svg")
         st.plotly_chart(fig, width="stretch")
 
 elif dataset_name == "HR All-in-One":
