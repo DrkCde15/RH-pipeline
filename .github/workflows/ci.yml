@@ -43,4 +43,4 @@ jobs:
       - name: Run pipeline
         if: ${{ hashFiles('data/ibm-attrition/HR-Employee-Attrition.csv') != '' }}
         run: |
-          python pipeline.py
+          python main.py

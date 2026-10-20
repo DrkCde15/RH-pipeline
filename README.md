@@ -29,17 +29,11 @@ Baixa todos os datasets do Kaggle para `data/`.
 ## Pipeline de limpeza
 
 ```bash
-python pipeline.py
+python main.py              # roda todos
+python main.py ibm-attrition  # roda um específico
 ```
 
-Processa o dataset IBM Attrition e gera `data/ibm-attrition/HR-Employee-Attrition-processed.csv` com:
-- Remoção de colunas constantes (`EmployeeCount`, `Over18`, `StandardHours`) e `EmployeeNumber`
-- Validação de nulos, duplicatas e faixas de valores
-- Encoding binário (`Attrition`, `OverTime`)
-- Gender convertido para `M` / `F`
-- Encoding ordinal (`BusinessTravel`)
-- One-hot encoding (`Department`, `EducationField`, `JobRole`, `MaritalStatus`)
-- Ordenação por `Age`
+Pipelines disponíveis: `ibm-attrition`, `hr-resources`, `hr-employee`, `hr-company`, `hr-all-in-one`
 
 ## Testes
 
@@ -78,13 +72,19 @@ RH-pipeline/
 │   ├── hr-employee/
 │   ├── hr-company/
 │   └── hr-all-in-one/
+├── pipeline/
+│   ├── ibm_attrition.py
+│   ├── hr_resources.py
+│   ├── hr_employee.py
+│   ├── hr_company.py
+│   └── hr_all_in_one.py
 ├── notebooks/
 │   └── eda.ipynb
 ├── tests/
 │   └── test_pipeline.py
 ├── dashboard.py
 ├── download_data.py
-├── pipeline.py
+├── main.py
 ├── requirements.txt
 └── README.md
 ```
