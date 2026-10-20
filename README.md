@@ -53,6 +53,14 @@ Pipelines disponíveis: `ibm-attrition`, `hr-resources`, `hr-employee`, `hr-comp
 - Validação de faixa de idade e renda
 - Ordenação por `Age`
 
+### hr-company
+- Lê 4 arquivos TSV (CompanyData, Diversity, EngagementSurvey)
+- Remove sentinela `12/12/2999` de `Termination_Date`
+- Parsing de datas, drop colunas 100% vazias do survey
+- Diversity: Gender → M/F, Education → ordinal, Race → fill "Unknown"
+- Join por `EmployeeID` (4968 matched)
+- Ordenação por `Start_Date`
+
 ## Testes
 
 ```bash
