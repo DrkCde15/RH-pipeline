@@ -1,11 +1,10 @@
+from pathlib import Path
+
 import pandas as pd
 import pytest
 
 from pipeline import (
-    BINARY_MAP,
     DROP_COLS,
-    GENDER_MAP,
-    ORDINAL_MAPS,
     clean,
     drop_duplicates,
     handle_nulls,
@@ -117,6 +116,10 @@ class TestValidate:
 
 
 class TestPipelineIntegration:
+    @pytest.mark.skipif(
+        not Path("data/HR-Employee-Attrition.csv").exists(),
+        reason="Dataset not available",
+    )
     def test_full_pipeline(self):
         df = load()
         assert len(df) > 0
