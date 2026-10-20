@@ -1,14 +1,15 @@
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
+import plotly.express as px
 import streamlit as st
 
 BASE_DIR = Path(__file__).parent
 DATA_PATH = BASE_DIR / "data" / "HR-Employee-Attrition.csv"
 
 st.set_page_config(page_title="RH Dashboard", layout="wide")
+
+COLORS = {"Yes": "#ff6b6b", "No": "#51cf66"}
 
 
 @st.cache_data
@@ -23,96 +24,191 @@ st.title("Dashboard de Attrition - RH")
 tab1, tab2, tab3, tab4 = st.tabs(["Visão Geral", "Demografia", "Cargo & Departamento", "Satisfação"])
 
 with tab1:
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
 
     attrition_rate = (df["Attrition"] == "Yes").mean() * 100
     col1.metric("Taxa de Attrition", f"{attrition_rate:.1f}%")
     col2.metric("Total de Funcionários", f"{len(df):,}")
     col3.metric("Idade Média", f"{df['Age'].mean():.1f}")
+    col4.metric("Renda Média", f"${df['MonthlyIncome'].mean():,.0f}")
 
     st.subheader("Distribuição de Attrition")
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    col1, col2 = st.columns(2)
 
-    sns.countplot(data=df, x="Attrition", palette="Set2", ax=axes[0])
-    axes[0].set_title("Contagem")
+    with col1:
+        counts = df["Attrition"].value_counts()
+        fig = px.pie(
+            values=counts.values,
+            names=counts.index.map({"Yes": "Saiu", "No": "Não saiu"}),
+            color=counts.index,
+            color_discrete_map={"Yes": COLORS["Yes"], "No": COLORS["No"]},
+            hole=0.4,
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
-    df["Attrition"].value_counts().plot.pie(
-        autopct="%1.1f%%", labels=["Não saiu", "Saiu"],
-        colors=["#66b3ff", "#ff9999"], ax=axes[1], ylabel=""
-    )
-    axes[1].set_title("Proporção")
+    with col2:
+        fig = px.bar(
+            x=counts.index.map({"Yes": "Saiu", "No": "Não saiu"}),
+            y=counts.values,
+            color=counts.index,
+            color_discrete_map=COLORS,
+            labels={"x": "Attrition", "y": "Contagem"},
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
-    st.pyplot(fig)
-
-    st.subheader("Correlação com Attrition")
-    numeric_cols = df.select_dtypes(include="number").columns
-    if "Attrition_num" not in df.columns:
-        df["Attrition_num"] = (df["Attrition"] == "Yes").astype(int)
-
+    st.subheader("Top 10 Correlações com Attrition")
+    df["Attrition_num"] = (df["Attrition"] == "Yes").astype(int)
+    numeric_cols = df.select_dtypes(include="number").columns.drop("Attrition_num")
     corr = df[numeric_cols.tolist() + ["Attrition_num"]].corr()["Attrition_num"].drop(
-        ["Attrition_num"]
-    ).sort_values(key=abs, ascending=False)
+        "Attrition_num"
+    ).sort_values(key=abs, ascending=False).head(10)
 
-    st.bar_chart(corr.head(10))
+    fig = px.bar(
+        x=corr.values,
+        y=corr.index,
+        orientation="h",
+        color=corr.values,
+        color_continuous_scale="RdBu_r",
+        labels={"x": "Correlação", "y": ""},
+    )
+    fig.update_layout(yaxis={"categoryorder": "total ascending"}, showlegend=False)
+    st.plotly_chart(fig, use_container_width=True)
 
 with tab2:
     st.subheader("Attrition por Idade")
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+    col1, col2 = st.columns(2)
 
-    sns.histplot(data=df, x="Age", hue="Attrition", kde=True, palette="Set2", ax=axes[0])
-    axes[0].set_title("Distribuição")
+    with col1:
+        fig = px.histogram(
+            df, x="Age", color="Attrition", barmode="overlay",
+            nbins=30, color_discrete_map=COLORS, opacity=0.7,
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
-    sns.boxplot(data=df, x="Attrition", y="Age", palette="Set2", ax=axes[1])
-    axes[1].set_title("Boxplot")
-
-    st.pyplot(fig)
+    with col2:
+        fig = px.box(
+            df, x="Attrition", y="Age", color="Attrition",
+            color_discrete_map=COLORS,
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
     st.subheader("Attrition por Gênero")
-    fig, ax = plt.subplots(figsize=(8, 5))
-    sns.countplot(data=df, x="Gender", hue="Attrition", palette="Set2", ax=ax)
-    st.pyplot(fig)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig = px.histogram(
+            df, x="Gender", color="Attrition",
+            barmode="group", color_discrete_map=COLORS,
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col2:
+        gender_rate = df.groupby("Gender")["Attrition"].apply(lambda x: (x == "Yes").mean() * 100)
+        fig = px.bar(
+            x=gender_rate.index, y=gender_rate.values,
+            color=gender_rate.index, color_discrete_sequence=["#4dabf7", "#f783ac"],
+            labels={"x": "Gênero", "y": "Taxa de Attrition (%)"},
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
     st.subheader("Renda Mensal")
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-    sns.boxplot(data=df, x="Attrition", y="MonthlyIncome", palette="Set2", ax=axes[0])
-    sns.histplot(data=df, x="MonthlyIncome", hue="Attrition", kde=True, palette="Set2", ax=axes[1])
-    st.pyplot(fig)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig = px.box(
+            df, x="Attrition", y="MonthlyIncome", color="Attrition",
+            color_discrete_map=COLORS,
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col2:
+        fig = px.histogram(
+            df, x="MonthlyIncome", color="Attrition",
+            barmode="overlay", nbins=40, color_discrete_map=COLORS, opacity=0.7,
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
 with tab3:
     st.subheader("Taxa de Attrition por Departamento")
-    dept = df.groupby("Department")["Attrition"].apply(lambda x: (x == "Yes").mean() * 100).sort_values()
-    fig, ax = plt.subplots(figsize=(10, 4))
-    dept.plot.barh(ax=ax, color=sns.color_palette("Set2", len(dept)))
-    ax.set_xlabel("%")
-    st.pyplot(fig)
+    dept = (
+        df.groupby("Department")["Attrition"]
+        .apply(lambda x: (x == "Yes").mean() * 100)
+        .reset_index()
+        .rename(columns={"Attrition": "Taxa (%)"})
+    )
+    fig = px.bar(
+        dept, x="Taxa (%)", y="Department", orientation="h",
+        color="Taxa (%)", color_continuous_scale="Reds",
+    )
+    fig.update_layout(yaxis={"categoryorder": "total ascending"})
+    st.plotly_chart(fig, use_container_width=True)
 
     st.subheader("Taxa de Attrition por Cargo")
-    job = df.groupby("JobRole")["Attrition"].apply(lambda x: (x == "Yes").mean() * 100).sort_values()
-    fig, ax = plt.subplots(figsize=(10, 6))
-    job.plot.barh(ax=ax, color=sns.color_palette("Set2", len(job)))
-    ax.set_xlabel("%")
-    st.pyplot(fig)
+    job = (
+        df.groupby("JobRole")["Attrition"]
+        .apply(lambda x: (x == "Yes").mean() * 100)
+        .reset_index()
+        .rename(columns={"Attrition": "Taxa (%)"})
+    )
+    fig = px.bar(
+        job, x="Taxa (%)", y="JobRole", orientation="h",
+        color="Taxa (%)", color_continuous_scale="Reds",
+    )
+    fig.update_layout(yaxis={"categoryorder": "total ascending"})
+    st.plotly_chart(fig, use_container_width=True)
 
-    st.subheader("Business Travel")
-    fig, ax = plt.subplots(figsize=(10, 4))
-    sns.countplot(data=df, x="BusinessTravel", hue="Attrition", palette="Set2", ax=ax)
-    st.pyplot(fig)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Business Travel")
+        fig = px.histogram(
+            df, x="BusinessTravel", color="Attrition",
+            barmode="group", color_discrete_map=COLORS,
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col2:
+        st.subheader("Education Field")
+        fig = px.histogram(
+            df, x="EducationField", color="Attrition",
+            barmode="group", color_discrete_map=COLORS,
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
 with tab4:
     cols = ["JobSatisfaction", "EnvironmentSatisfaction", "WorkLifeBalance", "RelationshipSatisfaction"]
     selected = st.multiselect("Selecione métricas:", cols, default=cols[:2])
 
     if selected:
-        fig, axes = plt.subplots(1, len(selected), figsize=(6 * len(selected), 5))
-        if len(selected) == 1:
-            axes = [axes]
+        col1, col2 = st.columns(2)
         for i, col in enumerate(selected):
-            sns.countplot(data=df, x=col, hue="Attrition", palette="Set2", ax=axes[i])
-            axes[i].set_title(col)
-        st.pyplot(fig)
+            with (col1 if i % 2 == 0 else col2):
+                fig = px.histogram(
+                    df, x=col, color="Attrition",
+                    barmode="group", color_discrete_map=COLORS,
+                )
+                st.plotly_chart(fig, use_container_width=True)
 
     st.subheader("Anos na Empresa")
-    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-    sns.histplot(data=df, x="YearsAtCompany", hue="Attrition", kde=True, palette="Set2", ax=axes[0])
-    sns.boxplot(data=df, x="Attrition", y="YearsAtCompany", palette="Set2", ax=axes[1])
-    st.pyplot(fig)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        fig = px.histogram(
+            df, x="YearsAtCompany", color="Attrition",
+            barmode="overlay", nbins=20, color_discrete_map=COLORS, opacity=0.7,
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col2:
+        fig = px.box(
+            df, x="Attrition", y="YearsAtCompany", color="Attrition",
+            color_discrete_map=COLORS,
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    st.subheader("Over Time")
+    fig = px.histogram(
+        df, x="OverTime", color="Attrition",
+        barmode="group", color_discrete_map=COLORS,
+    )
+    st.plotly_chart(fig, use_container_width=True)
