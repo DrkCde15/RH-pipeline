@@ -89,11 +89,11 @@ def handle_nulls(df: pd.DataFrame) -> pd.DataFrame:
     for col in cols_com_nulos.index:
         if df[col].dtype in ("int64", "float64"):
             mediana = df[col].median()
-            df[col].fillna(mediana, inplace=True)
+            df[col] = df[col].fillna(mediana)
             print(f"  {col}: preenchido com mediana ({mediana})")
         else:
             moda = df[col].mode()[0]
-            df[col].fillna(moda, inplace=True)
+            df[col] = df[col].fillna(moda)
             print(f"  {col}: preenchido com moda ({moda})")
 
     return df
