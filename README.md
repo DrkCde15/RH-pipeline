@@ -82,11 +82,12 @@ python -m pytest tests/ -v
 streamlit run dashboard.py
 ```
 
-Dashboard interativo em `http://localhost:8501` com abas:
-- Visão Geral
-- Demografia
-- Cargo & Departamento
-- Satisfação
+Dashboard interativo com seletor de dataset (5 opções):
+- IBM Attrition: visão geral, demografia, cargo, correlação
+- HR Resources: status, salário, departamento
+- HR Employee: visão geral, distribuições
+- HR Company: demografia, salário, idade x salário
+- HR All-in-One: engagement, tenure
 
 ## EDA
 
