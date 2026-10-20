@@ -61,6 +61,15 @@ Pipelines disponíveis: `ibm-attrition`, `hr-resources`, `hr-employee`, `hr-comp
 - Join por `EmployeeID` (4968 matched)
 - Ordenação por `Start_Date`
 
+### hr-all-in-one
+- Lê 4 arquivos (employee, survey, recruitment, training)
+- Strip espaços, parsing de datas (`dd-Mon-yy`)
+- Gender → M/F, Performance Score → ordinal
+- Deriva `HasTerminated`, `TenureDays`
+- Agrega treinamentos (count, custo médio, duração)
+- Join por `Employee ID` (3000 matched)
+- Ordenação por `StartDate`
+
 ## Testes
 
 ```bash
