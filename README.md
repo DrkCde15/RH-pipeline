@@ -35,6 +35,18 @@ python main.py ibm-attrition  # roda um específico
 
 Pipelines disponíveis: `ibm-attrition`, `hr-resources`, `hr-employee`, `hr-company`, `hr-all-in-one`
 
+### ibm-attrition
+- Remove colunas constantes + `EmployeeNumber`
+- Gender → M/F, binários, ordinal, one-hot
+- Ordenação por `Age`
+
+### hr-resources
+- Remove IDs redundantes (`MarriedID`, `GenderID`, etc.)
+- Strip espaços em `Sex`, `Department`, `HispanicLatino`
+- `HispanicLatino` → binário, `PerformanceScore` → ordinal
+- Parsing de datas, `HasTerminated` derivado
+- Ordenação por `DateofHire`
+
 ## Testes
 
 ```bash
