@@ -28,17 +28,52 @@ python pipeline.py
 
 Gera `data/HR-Employee-Attrition-processed.csv` com:
 - Remoção de colunas constantes (`EmployeeCount`, `Over18`, `StandardHours`) e `EmployeeNumber`
-- Encoding binário (`Attrition`, `Gender`, `OverTime`)
+- Validação de nulos, duplicatas e faixas de valores
+- Encoding binário (`Attrition`, `OverTime`)
+- Gender convertido para `M` / `F`
 - Encoding ordinal (`BusinessTravel`)
 - One-hot encoding (`Department`, `EducationField`, `JobRole`, `MaritalStatus`)
+- Ordenação por `Age`
+
+## Testes
+
+```bash
+python -m pytest tests/ -v
+```
+
+## Dashboard
+
+```bash
+streamlit run dashboard.py
+```
+
+Abre dashboard interativo em `http://localhost:8501` com abas de:
+- Visão Geral
+- Demografia
+- Cargo & Departamento
+- Satisfação
+
+## EDA
+
+Notebook em `notebooks/eda.ipynb` com análises e visualizações.
+
+## CI/CD
+
+GitHub Actions roda lint (`ruff`), testes e pipeline a cada push/PR em `main`.
 
 ## Estrutura
 
 ```
 RH-pipeline/
+├── .github/workflows/ci.yml
 ├── data/
 │   ├── HR-Employee-Attrition.csv
 │   └── HR-Employee-Attrition-processed.csv
+├── notebooks/
+│   └── eda.ipynb
+├── tests/
+│   └── test_pipeline.py
+├── dashboard.py
 ├── download_data.py
 ├── pipeline.py
 ├── requirements.txt
